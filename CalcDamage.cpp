@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <vector>
 #include <cmath>
+#include <blink/iterator/zip_range.h>
 
 std::vector<double> coef_high_dens_house = {-0.0484, 0.5509, -1.907, 3.5721};
 std::vector<double> coef_commercial = {-0.0218, 0.2764, -0.8716, 1.3685};
@@ -31,7 +32,8 @@ double
 calcNetLosses(DoubleRaster & inundation, IntRaster & mask, IntRaster & landuse, DoubleRaster & loss)
 {
     //    double net_loss = 0;
-    auto zip = raster_util::make_zip_range(std::ref(inundation), std::ref(mask), std::ref(landuse), std::ref(loss));
+    namespace raster_it = blink::iterator;
+    auto zip = raster_it::make_zip_range(std::ref(inundation), std::ref(mask), std::ref(landuse), std::ref(loss));
     for (auto i : zip)
     {
         const double & v_inundation = std::get<0>(i);
@@ -48,15 +50,15 @@ calcNetLosses(DoubleRaster & inundation, IntRaster & mask, IntRaster & landuse, 
             }
             if (v_landuse == 1) //Low residential
             {
-                loss = damage(v_inundation - pad_depth, coef_low_dens_house)
+                loss = damage(v_inundation - pad_depth, coef_low_dens_house);
             }
             if (v_landuse == 2) //Industrial
             {
-                loss = damage(v_inundation - pad_depth, coef_industry)
+                loss = damage(v_inundation - pad_depth, coef_industry);
             }
             if (v_inundation == 3) //Commercial
             {
-                loss = damage(v_inundation - pad_depth, coef_commercial)
+                loss = damage(v_inundation - pad_depth, coef_commercial);
             }
         }
         
@@ -66,5 +68,3 @@ calcNetLosses(DoubleRaster & inundation, IntRaster & mask, IntRaster & landuse, 
     
     
 }
-
-#endif /* CalcDamage_hpp */

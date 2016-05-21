@@ -39,5 +39,5 @@ file(GLOB_RECURSE AHHZ_Utils
 #cuda_add_executable(cccalcm ${Sources} ${Headers})
 	
 #set_property(TARGET ccalcm PROPERTY CXX_STANDARD 11)
-add_executable(dmgScanLte ${Sources} ${Headers} ${AHHZ_Utils})
+add_library(dmgScanLte SHARED ${Sources} ${Headers} ${AHHZ_Utils})
 target_link_libraries(dmgScanLte ${GDAL_LIBRARY} ${Boost_LIBRARIES})
