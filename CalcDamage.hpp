@@ -16,6 +16,6 @@ double
 damage(double depth, std::vector<double> & coeff);
 
 double
-calcNetLosses(DoubleRaster & inundation, IntRaster & mask, IntRaster & landuse, DoubleRaster & loss);
+calcNetLosses(DoubleRaster & inundation, DoubleRaster & proportion, IntRaster & mask, IntRaster &  landuse, DoubleRaster & loss);
 
 #endif /* CalcDamage_hpp */

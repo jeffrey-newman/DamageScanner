@@ -29,17 +29,18 @@ damage(double depth, std::vector<double> & coeff)
 }
 
 double
-calcNetLosses(DoubleRaster & inundation, IntRaster & mask, IntRaster & landuse, DoubleRaster & loss)
+calcNetLosses(DoubleRaster & inundation, DoubleRaster & proportion, IntRaster & mask, IntRaster &  landuse, DoubleRaster & loss)
 {
     //    double net_loss = 0;
     namespace raster_it = blink::iterator;
-    auto zip = raster_it::make_zip_range(std::ref(inundation), std::ref(mask), std::ref(landuse), std::ref(loss));
+    auto zip = raster_it::make_zip_range(std::ref(inundation), std::ref(proportion), std::ref(mask), std::ref(landuse), std::ref(loss));
     for (auto i : zip)
     {
         const double & v_inundation = std::get<0>(i);
-        const int & v_mask = std::get<1>(i);
-        const int & v_landuse = std::get<2>(i);
-        auto & loss = std::get<3>(i);
+        const double & v_proportion = std::get<1>(i);
+        const int & v_mask = std::get<2>(i);
+        const int & v_landuse = std::get<3>(i);
+        auto & loss = std::get<4>(i);
         
         
         if (v_mask != 0)
@@ -61,6 +62,10 @@ calcNetLosses(DoubleRaster & inundation, IntRaster & mask, IntRaster & landuse, 
                 loss = damage(v_inundation - pad_depth, coef_commercial);
             }
         }
+        
+        loss = loss * 0.1395 * v_proportion;  // convert to loss in 30*30m grid in aus dollars.
+        
+        
         
         //        net_loss += loss;
     }
